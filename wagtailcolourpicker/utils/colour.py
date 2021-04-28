@@ -1,5 +1,7 @@
-from wagtail.admin.rich_text.editors.draftail import features as draftail_features
-from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler
+from wagtail.admin.rich_text.converters.html_to_contentstate import \
+    InlineStyleElementHandler
+from wagtail.admin.rich_text.editors.draftail import \
+    features as draftail_features
 
 from wagtailcolourpicker.conf import get_setting
 
@@ -25,14 +27,31 @@ def register_color_feature(name, colour, features):
     feature_name = get_feature_name(name)
     type_ = get_feature_name_upper(name)
     tag = 'span'
-    detection = '%s[style="color: %s;"]' % (tag, colour)
 
     control = {
         'type': type_,
-        'icon': get_setting('ICON'),
-        'description': colour,
-        'style': {'color': colour}
+        'icon': get_setting('ICON')
     }
+
+    is_classname = colour.startswith('.')
+    if is_classname:
+        colour = colour[1:]
+        detection = '%s[class="%s"]'
+        control['class'] = colour
+        props = {
+            'class': colour
+        }
+    else:
+        detection = '%s[style="color: %s;"]'
+        control['style'] = {'color': colour}
+        props = {
+            'style': {
+                'color': colour
+            }
+        }
+
+    control['description'] = colour
+    detection = detection % (tag, colour)
 
     features.register_editor_plugin(
         'draftail', feature_name, draftail_features.InlineStyleFeature(control)
@@ -44,13 +63,10 @@ def register_color_feature(name, colour, features):
             'style_map': {
                 type_: {
                     'element': tag,
-                    'props': {
-                        'style': {
-                            'color': colour
-                        }
-                    }
+                    'props': props
                 }
-            }
+            },
+
         },
     })
 
