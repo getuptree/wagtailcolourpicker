@@ -15,7 +15,8 @@ SETTINGS_DEFAULTS = {
     'COLOURS': {
         'black': '#000000',
         'white': '#ffffff'
-    }
+    },
+    'EDITOR_COLOURS': {},
 }
 
 

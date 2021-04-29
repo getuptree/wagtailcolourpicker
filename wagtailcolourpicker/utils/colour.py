@@ -38,6 +38,9 @@ def register_color_feature(name, colour, features):
         colour = colour[1:]
         detection = '%s[class="%s"]'
         control['class'] = colour
+        editor_colors = get_setting('EDITOR_COLOURS')
+        editor_color = editor_colors.get(name, "#00f")
+        control['style'] = {'color': editor_color}
         props = {
             'class': colour
         }
@@ -46,7 +49,7 @@ def register_color_feature(name, colour, features):
         control['style'] = {'color': colour}
         props = {
             'style': {
-                'color': colour
+                'color': colour,
             }
         }
 
